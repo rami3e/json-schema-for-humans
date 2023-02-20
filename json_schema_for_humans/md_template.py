@@ -36,7 +36,7 @@ def escape_for_table(example_text: Optional[str]) -> str:
     """Filter. escape characters('|', '`') in string to be inserted into markdown table"""
     if example_text is None:
         return ""
-    return example_text.translate(str.maketrans({"|": "\\|", "`": "\\`", "\n": "<br />"}))
+    return example_text.translate(str.maketrans({"|": "\\|", "`": "\\`", "\n": "  "}))
 
 
 def get_numeric_minimum_restriction(schema_node: SchemaNode, default: str = "N/A") -> str:
@@ -340,14 +340,14 @@ class MarkdownTemplate(object):
                 self.badge("Deprecated", "red") if jinja_filters.deprecated(self.config, sub_property) else "No"
             )
             # Link
-            if sub_property.should_be_a_link(self.config):
-                line.append(
-                    "Same as " + self.format_link(sub_property.links_to.link_name, sub_property.links_to.html_id)
-                )
-            elif sub_property.refers_to:
-                line.append("In " + sub_property.ref_path)
-            else:
-                line.append("-")
+            # if sub_property.should_be_a_link(self.config):
+            #     line.append(
+            #         "Same as " + self.format_link(sub_property.links_to.link_name, sub_property.links_to.html_id)
+            #     )
+            # elif sub_property.refers_to:
+            #     line.append("In " + sub_property.ref_path)
+            # else:
+            #     line.append("-")
 
             # title or description
             description = sub_property.description or "-"
@@ -360,7 +360,7 @@ class MarkdownTemplate(object):
 
         if properties:
             # add header
-            properties.insert(0, ["Property", "Pattern", "Type", "Deprecated", "Definition", "Title/Description"])
+            properties.insert(0, ["Property", "Pattern", "Type", "Deprecated", "Title/Description"])
 
         return properties
 
@@ -400,8 +400,8 @@ class MarkdownTemplate(object):
             schema_link_name = schema.links_to.link_name
             html_id = schema.links_to.html_id
             type_info.append(["**Same definition as**", f"[{ schema_link_name }](#{ html_id })"])
-        elif schema.refers_to:
-            type_info.append(["**Defined in**", schema.ref_path])
+        # elif schema.refers_to:
+        #     type_info.append(["**Defined in**", schema.ref_path])
 
         return type_info
 
